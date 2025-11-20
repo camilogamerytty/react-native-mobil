@@ -16,57 +16,56 @@ module.exports = {
     // 🔐 LOGIN DE USUARIO
     // ============================================
     login(req, res) {
-        const email = req.body.correo_usuario;
-        const password = req.body.contrasena;
+      const { email, password } = req.body;
 
-        User.findByEmail(email, async (err, myUser) => {
-            if (err) {
-                return res.status(501).json({
-                    success: false,
-                    message: 'Error al consultar el usuario',
-                    error: err
-                });
-            }
+      User.findByEmail(email, async (err, myUser) => {
+        if (err) {
+          return res.status(501).json({
+            success: false,
+            message: "Error al consultar el usuario",
+            error: err,
+          });
+        }
 
-            if (!myUser) {
-                return res.status(401).json({
-                    success: false,
-                    message: 'El email no existe en la base de datos'
-                });
-            }
+        if (!myUser) {
+          return res.status(401).json({
+            success: false,
+            message: "El email no existe en la base de datos",
+          });
+        }
 
-            // Verificar contraseña
-            const isPasswordValid = await bcrypt.compare(password, myUser.contrasena);
+        const isPasswordValid = await bcrypt.compare(password, myUser.password);
 
-            if (isPasswordValid) {
-                // Generar token JWT
-                const token = jwt.sign(
-                    { id: myUser.Id_usuario, email: myUser.correo_usuario, role: myUser.nombre_rol },
-                    keys.secretOrKey,
-                    { expiresIn: '1h' } // Expira en 1 hora
-                );
+        if (!isPasswordValid) {
+          return res.status(401).json({
+            success: false,
+            message: "Contraseña o correo incorrecto",
+          });
+        }
 
-                // Datos que se devolverán al frontend
-                const data = {
-                    id: myUser.Id_usuario,
-                    nombre: myUser.nombre_usuario,
-                    correo: myUser.correo_usuario,
-                    rol: myUser.nombre_rol,
-                    session_token: `JWT ${token}`
-                };
+        const token = jwt.sign(
+          { id: myUser.id, email: myUser.email, role: myUser.role },
+          keys.secretOrKey,
+          { expiresIn: "1h" }
+        );
 
-                return res.status(201).json({
-                    success: true,
-                    message: 'Usuario autenticado correctamente',
-                    data: data
-                });
-            } else {
-                return res.status(401).json({
-                    success: false,
-                    message: 'Contraseña o correo incorrecto'
-                });
-            }
+        const data = {
+          id: myUser.id,
+          email: myUser.email,
+          name: myUser.name,
+          lastname: myUser.lastname,
+          image: myUser.image,
+          phone: myUser.phone,
+          role: myUser.role,
+          session_token: `JWT ${token}`,
+        };
+
+        return res.status(201).json({
+          success: true,
+          message: "Usuario autenticado",
+          data,
         });
+      });
     },
 
     // ============================================
@@ -138,6 +137,7 @@ module.exports = {
                     message: 'Error al crear el usuario',
                     error: err
                 });
+                
             }
 
             return res.status(201).json({

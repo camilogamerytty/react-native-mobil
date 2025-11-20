@@ -7,35 +7,35 @@ import { ProfileInfoScreen } from './src/presentation/views/profile/info/Profile
 
 export type RootStackParamList = {
   HomeScreen: undefined;
-    RegisterScreen: undefined;
-    ProfileInfoScreen: undefined;
-  }
+  RegisterScreen: undefined;
+  ProfileInfoScreen: undefined;
+}
 
-  const Stack = createNativeStackNavigator <RootStackParamList> ();
+const Stack = createNativeStackNavigator <RootStackParamList> ();
 
-  const App = () => {
-    return (
-      <NavigationContainer>
-        <Stack.Navigator screenOptions={{headerShown: false}}>
-          <Stack.Screen
-            name="HomeScreen"
-            component={HomeScreen}
-          />
-          <Stack.Screen
-            name="RegisterScreen"
-            component={RegisterScreen}
-            options={{
-              headerShown: true,
-              title: "Registro",
-            }}
-          />
-          <Stack.Screen
-            name="ProfileInfoScreen"
-            component={ProfileInfoScreen}
-          />
-        </Stack.Navigator>
-      </NavigationContainer>
-    );
-  };
-  
+const App = () => {
+  return (
+    <NavigationContainer>
+      <Stack.Navigator screenOptions={{headerShown: false}}>
+        <Stack.Screen
+          name="HomeScreen"
+          component={HomeScreen}
+        />
+        <Stack.Screen
+          name="RegisterScreen"
+          component={RegisterScreen}
+          options={{
+            headerShown: true,
+            title: "Registro",
+          }}
+        />
+        <Stack.Screen
+          name="ProfileInfoScreen"
+          component={ProfileInfoScreen}
+        />
+      </Stack.Navigator>
+    </NavigationContainer>
+  );
+};
+
 export default App;

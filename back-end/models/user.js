@@ -49,10 +49,7 @@ User.findById = (id, result) => {
 ================================ */
 User.findByEmail = (email, result) => {
     const sql = `
-        SELECT Id_usuario, nombre_usuario, correo_usuario, contrasena, nombre_rol
-        FROM usuario
-        WHERE correo_usuario = ?
-    `;
+        SELECT id, email, name, lastname, image, phone, role, password FROM users WHERE email = ?`;
 
     db.query(sql, [email], (err, user) => {
         if (err) {
@@ -70,7 +67,7 @@ User.findByEmail = (email, result) => {
 ================================ */
 User.create = async (user, result) => {
     try {
-        const hash = await bcrypt.hash(user.contrasena, 10);
+        const hash = await bcrypt.hash(user.password, 10);
         const validRoles = ['admin', 'user'];
         const role = validRoles.includes(user.role) ? user.role : 'user';
 
@@ -97,7 +94,7 @@ User.create = async (user, result) => {
             new Date(),
             new Date()  
         ];
-
+        
         db.query(sql, values, (err, res) => {
             if (err) {
                 console.log('Error al crear usuario:', err);
